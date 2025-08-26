@@ -13,16 +13,6 @@ class RegistroSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        # Garante que a senha é removida dos dados validados
-        password = validated_data.pop('password')
-        tipo_usuario = validated_data.pop('tipo_usuario')
-
-        # Cria o objeto de usuário de forma segura
-        usuario = Usuario.objects.create_user(password=password, **validated_data)
-
-        if tipo_usuario == 'profissional':
-            Profissional.objects.create(usuario=usuario)
-        else:
-            Responsavel.objects.create(usuario=usuario)
+        usuario = Usuario.objects.create_user(**validated_data)
 
         return usuario
