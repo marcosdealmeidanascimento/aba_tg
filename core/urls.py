@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from core.views.auth_views import MyProfileView, RegistroView
+from core.views.paciente_views import PacienteViewSet
 from core.views.profissional_views import (
     CompletarProfissionalView,
     ProfissionalPerfilView,
@@ -12,6 +13,7 @@ from core.views.responsavel_views import (
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
+router.register(r'pacientes', PacienteViewSet, basename='paciente')
 
 urlpatterns = [
      # Me

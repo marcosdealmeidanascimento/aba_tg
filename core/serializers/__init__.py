@@ -2,3 +2,4 @@ from .auth_serializers import RegistroSerializer
 from .usuario_serializers import UsuarioSerializer
 from .profissional_serializers import ProfissionalSerializer
 from .responsavel_serializers import ResponsavelSerializer
+from .paciente_serializers import PacienteSerializer

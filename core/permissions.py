@@ -33,3 +33,36 @@ class IsResponsavelOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         # obj é a instância do objeto (neste caso, o perfil de Responsável)
         return obj.usuario == request.user
+
+
+class IsProfissionalOrResponsavel(BasePermission):
+    """
+    Permite acesso apenas a pacientes que são atendidos por um profissional ou
+    cadastrados por um responsável.
+    """
+    def has_permission(self, request, view):
+        # Permite a visualização da lista se o
+        # usuário for profissional ou responsável
+        if not hasattr(request.user, 'profissional') and \
+           not hasattr(request.user, 'responsavel'):
+            return False
+        return True
+
+
+class IsRelatedToPaciente(BasePermission):
+    """
+    Permite acesso apenas se o usuário logado for um dos profissionais ou 
+    responsáveis relacionados ao paciente.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Verifica se o usuário é um profissional
+        # e se está relacionado ao paciente
+        if hasattr(request.user, 'profissional'):
+            return request.user.profissional in obj.profissionais.all()
+
+        # Verifica se o usuário é um responsável
+        # e se está relacionado ao paciente
+        if hasattr(request.user, 'responsavel'):
+            return request.user.responsavel in obj.responsaveis.all()
+
+        return False
