@@ -1,38 +1,36 @@
 from django.db import models
-
-
-from backend import settings
+from django.utils.translation import gettext_lazy as _
 from core.models.base import Genero
 from .usuario import Usuario
 
+
 class Profissional(models.Model):
-    
     class Especialidade(models.TextChoices):
-        PSICOLOGO = 'psicologo', 'Psicólogo'
-        PSIQUIATRA = 'psiquiatra', 'Psiquiatra'
-        FONOAUDIOLOGO = 'fonoaudiologo', 'Fonoaudiólogo'
-        OUTRO = 'outro', 'Outro'
+        PSICOLOGO = 'psicologo', _('Psicólogo')
+        PSIQUIATRA = 'psiquiatra', _('Psiquiatra')
+        FONOAUDIOLOGO = 'fonoaudiologo', _('Fonoaudiólogo')
+        OUTRO = 'outro', _('Outro')
 
     usuario = models.OneToOneField(
-        Usuario, 
+        Usuario,
         on_delete=models.CASCADE,
         primary_key=True,
-        related_name='profissional',
+        related_name='perfil_profissional',
     )
     genero = models.CharField(
+        max_length=10,
         choices=Genero.choices,
-        max_length=20,
-        null=True
+        default=Genero.OUTRO
     )
-    licenca = models.CharField(max_length=50, unique=True, null=True)
+    licenca = models.CharField(max_length=50, unique=True)
     especialidade = models.CharField(
         max_length=20,
         choices=Especialidade.choices,
-        default=Especialidade.PSICOLOGO
+        default=Especialidade.OUTRO
     )
     descricao = models.TextField(null=True, blank=True)
-    telefone = models.CharField(max_length=15, null=True, blank=True)
+    telefone = models.CharField(max_length=20, null=True)
     aprovado = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"Profissional: {self.usuario.username}"
+    def __str__(self) -> str:
+        return str(f"Profissional: {self.usuario.username}")

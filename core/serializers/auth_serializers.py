@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from core.models import Usuario, Profissional, Responsavel
+from core.models import Usuario
+
 
 class RegistroSerializer(serializers.ModelSerializer):
     tipo_usuario = serializers.ChoiceField(
