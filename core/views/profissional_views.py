@@ -1,8 +1,10 @@
 from rest_framework import status
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from core.permissions import IsProfissional
+from core.models.profissional import Profissional
+from core.permissions import IsProfissional, IsProfissionalOwner
 from core.serializers.profissional_serializers import ProfissionalSerializer
 
 
@@ -29,3 +31,13 @@ class CompletarProfissionalView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfissionalPerfilView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Permite visualizar, atualizar ou deletar
+    o próprio perfil de profissional.
+    """
+    queryset = Profissional.objects.all()
+    serializer_class = ProfissionalSerializer
+    permission_classes = [IsAuthenticated, IsProfissionalOwner]

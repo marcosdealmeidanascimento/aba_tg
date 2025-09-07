@@ -1,6 +1,6 @@
-# core/models/usuario.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 
 class Usuario(AbstractUser):
     USER_TYPE_CHOICES = (
@@ -8,8 +8,8 @@ class Usuario(AbstractUser):
         ("responsavel", "Responsável"),
     )
     tipo_usuario = models.CharField(
-        max_length=20, 
-        choices=USER_TYPE_CHOICES, 
+        max_length=20,
+        choices=USER_TYPE_CHOICES,
         default="responsavel"
     )
 
