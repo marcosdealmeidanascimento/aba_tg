@@ -1,8 +1,10 @@
 from rest_framework import status
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from core.permissions import IsResponsavel
+from core.permissions import IsResponsavel, IsResponsavelOwner
+from core.models.responsavel import Responsavel
 from core.serializers.responsavel_serializers import ResponsavelSerializer
 
 
@@ -28,3 +30,13 @@ class CompletarResponsavelView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResponsavelPerfilView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Permite visualizar, atualizar ou deletar
+    o próprio perfil de responsável
+    """
+    queryset = Responsavel.objects.all()
+    serializer_class = ResponsavelSerializer
+    permission_classes = [IsAuthenticated, IsResponsavelOwner]
