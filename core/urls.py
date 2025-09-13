@@ -10,15 +10,17 @@ from core.views.responsavel_views import (
      CompletarResponsavelView,
      ResponsavelPerfilView
 )
-from core.views.diagnostico_views import (
+from core.views.diagnostico_views import (   
      DiagnosticoViewSet,
      GetDiagnosticoByPacienteView
 )
+from core.views.sessao_views import GetSessoesByPacienteView, SessaoViewSet, FecharSessaoAPIView
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
 router.register(r'pacientes', PacienteViewSet, basename='paciente')
 router.register(r'diagnosticos', DiagnosticoViewSet, basename='diagnostico')
+router.register(r'sessoes', SessaoViewSet, basename='sessao')
 
 urlpatterns = [
      # Me
@@ -44,6 +46,10 @@ urlpatterns = [
      path('diagnosticos/paciente/<int:paciente_id>/',
           GetDiagnosticoByPacienteView.as_view(),
           name='diagnostico_paciente'),
+
+     # Rotas para Sessao
+     path('sessoes/fechar/<int:pk>/', FecharSessaoAPIView.as_view(), name='fechar_sessao'),
+     path('sessoes/paciente/<int:paciente_id>/', GetSessoesByPacienteView.as_view(), name='sessoes_paciente'),
 
      # Rotas para outros endpoints
      path('', include(router.urls)),

@@ -1,6 +1,7 @@
-from .usuario import Usuario
-from .profissional import Profissional
-from .responsavel import Responsavel
-from .paciente import Paciente
-from .diagnostico import Diagnostico
-from .habilidade import Nivel, Modulo
+from .usuario import *
+from .profissional import *
+from .responsavel import *
+from .paciente import *
+from .diagnostico import *
+from .habilidade import *
+from .sessao import *

@@ -52,17 +52,15 @@ class IsProfissionalOrResponsavel(BasePermission):
 class IsRelatedToPaciente(BasePermission):
     """
     Permite acesso apenas se o usuário logado for um dos profissionais ou 
-    responsáveis relacionados ao paciente.
+    responsáveis relacionados ao paciente da sessão.
     """
     def has_object_permission(self, request, view, obj):
-        # Verifica se o usuário é um profissional
-        # e se está relacionado ao paciente
+        paciente_instance = obj.paciente
+        
         if hasattr(request.user, 'profissional'):
-            return request.user.profissional in obj.profissionais.all()
+            return paciente_instance in request.user.profissional.pacientes_atendidos.all()
 
-        # Verifica se o usuário é um responsável
-        # e se está relacionado ao paciente
         if hasattr(request.user, 'responsavel'):
-            return request.user.responsavel in obj.responsaveis.all()
+            return paciente_instance in request.user.responsavel.pacientes_cuidados.all()
 
         return False

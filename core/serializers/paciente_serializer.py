@@ -13,9 +13,10 @@ class PacienteSerializer(serializers.ModelSerializer):
             'genero',
             'responsaveis',
             'profissionais',
-            'criado_em',
+            'created_at',
+            'updated_at',
         ]
-        read_only_fields = ['responsaveis', 'profissionais', 'criado_em']
+        read_only_fields = ['responsaveis', 'profissionais', 'created_at', 'updated_at']
 
     def create(self, validated_data):
         # Cria o paciente com os dados validados

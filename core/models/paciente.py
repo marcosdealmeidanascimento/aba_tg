@@ -25,8 +25,8 @@ class Paciente(models.Model):
         blank=True
     )
 
-    criado_em = models.DateTimeField(auto_now_add=True)
-    atualizado_em = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return str(f"Paciente: {self.nome}")
