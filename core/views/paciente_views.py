@@ -21,11 +21,10 @@ class PacienteViewSet(viewsets.ModelViewSet):
         Filtra a lista de pacientes com base no usuário logado.
         """
         user = self.request.user
-
-        if hasattr(user, 'profissional'):
+        if user.tipo_usuario == 'profissional':
             return user.profissional.pacientes_atendidos.all()
 
-        if hasattr(user, 'responsavel'):
+        if user.tipo_usuario == 'responsavel':
             return user.responsavel.pacientes_cuidados.all()
 
         return Paciente.objects.none()
@@ -42,9 +41,22 @@ class PacienteViewSet(viewsets.ModelViewSet):
         serializer.context['responsavel_logado'] = user.responsavel
         serializer.save()
 
+    def perform_update(self, serializer):
+        user = self.request.user
+        # Lógica para adicionar ou remover profissionais
+        profissionais_data = self.request.data.get('profissionais', None)
+        if profissionais_data is not None:
+            serializer.instance.profissionais.set(profissionais_data)
+
+        # Lógica para adicionar ou remover responsáveis
+        responsaveis_data = self.request.data.get('responsaveis', None)
+        if responsaveis_data is not None and user.id in responsaveis_data:
+            serializer.instance.responsaveis.set(responsaveis_data)
+
+        serializer.save()
+
     def get_object(self):
         try:
             return self.get_queryset().get(pk=self.kwargs['pk'])
         except Paciente.DoesNotExist:
             raise NotFound("Paciente não encontrado.")
-

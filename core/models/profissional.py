@@ -12,10 +12,9 @@ class Profissional(models.Model):
         OUTRO = 'outro', _('Outro')
 
     usuario = models.OneToOneField(
-        Usuario,
+        Usuario, 
         on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='perfil_profissional',
+        primary_key=True
     )
     genero = models.CharField(
         max_length=10,
