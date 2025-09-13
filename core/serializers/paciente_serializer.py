@@ -24,13 +24,7 @@ class PacienteSerializer(serializers.ModelSerializer):
         # A instância do responsável será passada pela view
         responsavel_logado = self.context.get('responsavel_logado')
 
-        # A instância do profissional será passada pela view
-        profissional_logado = self.context.get('profissional_logado')
-
         if responsavel_logado:
             paciente.responsaveis.add(responsavel_logado)
-
-        if profissional_logado:
-            paciente.profissionais.add(profissional_logado)
 
         return paciente

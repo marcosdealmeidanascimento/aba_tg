@@ -4,7 +4,7 @@ from rest_framework import viewsets
 
 from core.models import Paciente
 from core.permissions import IsRelatedToPaciente
-from core.serializers.paciente_serializers import PacienteSerializer
+from core.serializers.paciente_serializer import PacienteSerializer
 
 
 class PacienteViewSet(viewsets.ModelViewSet):
@@ -36,7 +36,9 @@ class PacienteViewSet(viewsets.ModelViewSet):
         """
         user = self.request.user
         if not hasattr(user, 'responsavel'):
-            raise PermissionDenied("Apenas responsáveis podem criar pacientes.")
+            raise PermissionDenied(
+                "Apenas responsáveis podem criar pacientes."
+            )
 
         serializer.context['responsavel_logado'] = user.responsavel
         serializer.save()

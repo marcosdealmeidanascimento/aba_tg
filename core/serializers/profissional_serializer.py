@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Profissional
-from core.serializers.usuario_serializers import UsuarioSerializer
+from core.serializers.usuario_serializer import UsuarioSerializer
 
 
 class ProfissionalSerializer(serializers.ModelSerializer):

@@ -10,10 +10,15 @@ from core.views.responsavel_views import (
      CompletarResponsavelView,
      ResponsavelPerfilView
 )
+from core.views.diagnostico_views import (
+     DiagnosticoViewSet,
+     GetDiagnosticoByPacienteView
+)
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
 router.register(r'pacientes', PacienteViewSet, basename='paciente')
+router.register(r'diagnosticos', DiagnosticoViewSet, basename='diagnostico')
 
 urlpatterns = [
      # Me
@@ -34,6 +39,11 @@ urlpatterns = [
           name='completar_responavel'),
      path('perfil/responsavel/<pk>/', ResponsavelPerfilView.as_view(),
           name='perfil_responavel'),
+
+     # Rotas para Diagnostico
+     path('diagnosticos/paciente/<int:paciente_id>/',
+          GetDiagnosticoByPacienteView.as_view(),
+          name='diagnostico_paciente'),
 
      # Rotas para outros endpoints
      path('', include(router.urls)),

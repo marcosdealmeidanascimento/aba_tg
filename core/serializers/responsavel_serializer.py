@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Responsavel
-from core.serializers.usuario_serializers import UsuarioSerializer
+from core.serializers.usuario_serializer import UsuarioSerializer
 
 
 class ResponsavelSerializer(serializers.ModelSerializer):

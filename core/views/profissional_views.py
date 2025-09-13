@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from core.models.profissional import Profissional
 from core.permissions import IsProfissional, IsProfissionalOwner
-from core.serializers.profissional_serializers import ProfissionalSerializer
+from core.serializers.profissional_serializer import ProfissionalSerializer
 
 
 class CompletarProfissionalView(APIView):

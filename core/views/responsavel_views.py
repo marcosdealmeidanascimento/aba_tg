@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from core.permissions import IsResponsavel, IsResponsavelOwner
 from core.models.responsavel import Responsavel
-from core.serializers.responsavel_serializers import ResponsavelSerializer
+from core.serializers.responsavel_serializer import ResponsavelSerializer
 
 
 class CompletarResponsavelView(APIView):

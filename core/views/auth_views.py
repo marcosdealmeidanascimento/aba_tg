@@ -6,8 +6,8 @@ from core.models.responsavel import Responsavel
 from core.serializers import RegistroSerializer
 from core.models.profissional import Profissional
 from core.models import Usuario
-from core.serializers.profissional_serializers import ProfissionalSerializer
-from core.serializers.responsavel_serializers import ResponsavelSerializer
+from core.serializers.profissional_serializer import ProfissionalSerializer
+from core.serializers.responsavel_serializer import ResponsavelSerializer
 
 
 class RegistroView(APIView):
