@@ -93,7 +93,7 @@ class DiagnosticoViewSet(viewsets.ModelViewSet):
 
 class GetDiagnosticoByPacienteView(generics.ListAPIView):
     serializer_class = DiagnosticoSerializer
-    permission_classes = [IsAuthenticated, IsRelatedToPaciente]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         # Acessa o ID do paciente a partir dos parâmetros da URL
@@ -105,9 +105,15 @@ class GetDiagnosticoByPacienteView(generics.ListAPIView):
         except Paciente.DoesNotExist:
             raise NotFound(f"Paciente com ID {paciente_id} não encontrado.")
 
-        # Usa a permissão para verificar se o usuário logado tem acesso a este paciente
-        if not IsRelatedToPaciente().has_object_permission(self.request, self, paciente):
-            raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
+        user = self.request.user
+
+        if hasattr(user, 'profissional'):
+            if paciente not in user.profissional.pacientes_atendidos.all():
+                raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
+
+        if hasattr(user, 'responsavel'):
+            if paciente not in user.responsavel.pacientes_cuidados.all():
+                raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
 
         # Retorna o queryset filtrado
         return Diagnostico.objects.filter(paciente=paciente)
