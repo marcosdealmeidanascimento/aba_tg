@@ -21,7 +21,7 @@ class PacienteViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, 'profissional'):
-            return user.profissional.pacientes_atendidos.all()
+            return Paciente.objects.all()
         if hasattr(user, 'responsavel'):
             return user.responsavel.pacientes_cuidados.all()
         return Paciente.objects.none()
@@ -52,9 +52,6 @@ class PacienteViewSet(viewsets.ModelViewSet):
     def desvincular_profissional(self, request, pk=None):
         paciente = Paciente.objects.get(id=pk)
 
-        if not hasattr(request.user, 'profissional'):
-            raise PermissionDenied("Apenas profissionais podem gerenciar vínculos.")
-
         profissional = request.user.profissional
 
         paciente.profissionais.remove(profissional)
@@ -63,7 +60,7 @@ class PacienteViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], url_path='vincular-responsavel')
     def vincular_responsavel(self, request, pk=None):
         paciente = Paciente.objects.get(id=pk)
-        
+
         if not hasattr(request.user, 'responsavel'):
             raise PermissionDenied("Apenas responsáveis podem gerenciar seus próprios vínculos.")
 
@@ -71,7 +68,7 @@ class PacienteViewSet(viewsets.ModelViewSet):
 
         paciente.responsaveis.add(responsavel)
         return Response({"message": "Responsável vinculado com sucesso."}, status=status.HTTP_200_OK)
-    
+
     @action(detail=True, methods=['delete'], url_path='desvincular-responsavel')
     def desvincular_responsavel(self, request, pk=None):
         paciente = Paciente.objects.get(id=pk)

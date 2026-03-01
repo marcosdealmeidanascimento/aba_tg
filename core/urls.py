@@ -5,6 +5,7 @@ from core.views.paciente_views import PacienteViewSet
 from core.views.profissional_views import (
     CompletarProfissionalView,
     ProfissionalPerfilView,
+    ProfissionalListView,
     )
 from core.views.responsavel_views import (
      CompletarResponsavelView,
@@ -28,6 +29,7 @@ urlpatterns = [
 
      # Rotas de Autenticação
      path('auth/register/', RegistroView.as_view(), name='auth_register'),
+     path('auth/register/<int:pk>/', RegistroView.as_view(), name='auth_register_detail'),
 
      # Rotas para Profissionais
      path('perfil/profissional/completar/',
@@ -35,6 +37,7 @@ urlpatterns = [
           name='completar_profissional'),
      path('perfil/profissional/<pk>/', ProfissionalPerfilView.as_view(),
           name='perfil_profissional'),
+     path('profissionais/', ProfissionalListView.as_view(), name='profissionais'),
 
      # Rotas para Responsável
      path('perfil/responsavel/completar/', CompletarResponsavelView.as_view(),

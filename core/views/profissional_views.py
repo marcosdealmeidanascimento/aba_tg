@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,6 +6,15 @@ from rest_framework.permissions import IsAuthenticated
 from core.models.profissional import Profissional
 from core.permissions import IsProfissional, IsProfissionalOwner
 from core.serializers.profissional_serializer import ProfissionalSerializer
+
+
+class ProfissionalListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        profissionais = Profissional.objects.all()
+        serializer = ProfissionalSerializer(profissionais, many=True)
+        return Response(serializer.data)
 
 
 class CompletarProfissionalView(APIView):

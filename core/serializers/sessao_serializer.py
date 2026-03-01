@@ -25,9 +25,10 @@ class SessaoSerializer(serializers.ModelSerializer):
 class FecharSessaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sessao
-        fields = ['id', 'data_horario_fim']
+        fields = ['id', 'data_horario_fim', 'observacoes']
 
     def update(self, instance, validated_data):
         instance.data_horario_fim = timezone.now()
+        instance.observacoes = validated_data.get('observacoes', instance.observacoes)
         instance.save()
         return instance

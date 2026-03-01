@@ -18,6 +18,19 @@ class RegistroView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def patch(self, request, pk=None):
+        try:
+            usuario = request.user if pk is None else Usuario.objects.get(pk=pk)
+        except Usuario.DoesNotExist:
+            return Response({"error": "Usuário não encontrado"}, status=404)
+
+        serializer = RegistroSerializer(instance=usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MyProfileView(APIView):
     permission_classes = [IsAuthenticated]
