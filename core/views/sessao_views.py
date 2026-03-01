@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from core.models import Sessao, Paciente
 from core.serializers.sessao_serializer import FecharSessaoSerializer, SessaoSerializer
 from core.permissions import IsProfissional, IsRelatedToPaciente
-
+from django.core.exceptions import ObjectDoesNotExist
 
 class SessaoViewSet(viewsets.ModelViewSet):
     queryset = Sessao.objects.all()
@@ -25,15 +25,27 @@ class SessaoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-
-        if not hasattr(user, 'profissional'):
-            raise PermissionDenied("Apenas profissionais podem criar sessões.")
-
         paciente = serializer.validated_data.get('paciente')
-        if not user.profissional.pacientes_atendidos.filter(id=paciente.id).exists():
-            raise PermissionDenied("Você não tem permissão para criar sessões para este paciente.")
-        
-        serializer.save(profissional=user.profissional)
+
+        try:
+            responsavel = user.responsavel
+            if responsavel.pacientes_cuidados.filter(id=paciente.id).exists():
+                serializer.save(responsavel=responsavel)
+                return
+        except ObjectDoesNotExist:
+            pass
+
+        try:
+            profissional = user.profissional
+            if profissional.pacientes_atendidos.filter(id=paciente.id).exists():
+                serializer.save(profissional=profissional)
+                return
+        except ObjectDoesNotExist:
+            pass
+
+        raise PermissionDenied(
+            "Apenas pacientes vinculados ao profissional ou responsável podem criar sessões."
+        )
 
 
 class FecharSessaoAPIView(APIView):
@@ -43,9 +55,6 @@ class FecharSessaoAPIView(APIView):
 
     def post(self, request, pk):
         user = self.request.user
-
-        if not hasattr(user, 'profissional'):
-            raise PermissionDenied("Apenas profissionais podem fechar sessões.")
 
         sessao = Sessao.objects.get(pk=pk)
         serializer = FecharSessaoSerializer(sessao, data=request.data)

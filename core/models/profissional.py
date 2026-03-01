@@ -12,7 +12,7 @@ class Profissional(models.Model):
         OUTRO = 'outro', _('Outro')
 
     usuario = models.OneToOneField(
-        Usuario, 
+        Usuario,
         on_delete=models.CASCADE,
         primary_key=True
     )

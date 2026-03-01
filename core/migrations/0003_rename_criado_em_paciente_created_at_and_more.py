@@ -32,7 +32,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('paciente', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sessoes', to='core.paciente')),
-                ('profissional', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sessoes_criadas', to='core.profissional')),
+                ('profissional', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, blank=True, null=True, related_name='sessoes_criadas', to='core.profissional')),
+                ('responsavel', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, null=True, to='core.responsavel', related_name='sessoes_criadas')),
             ],
         ),
     ]

@@ -56,7 +56,7 @@ class IsRelatedToPaciente(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         paciente_instance = obj.paciente
-        
+
         if hasattr(request.user, 'profissional'):
             return paciente_instance in request.user.profissional.pacientes_atendidos.all()
 
