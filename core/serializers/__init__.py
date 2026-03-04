@@ -5,3 +5,7 @@ from .responsavel_serializer import *
 from .paciente_serializer import *
 from .diagnostico_serializer import *
 from .sessao_serializer import *
+from .atividade_serializer import *
+from .auditoria_serializer import *
+from .nivel_serializer import *
+from .pedido_vinculo_serializer import *

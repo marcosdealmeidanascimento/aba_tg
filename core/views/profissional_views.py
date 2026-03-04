@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from core.models.profissional import Profissional
 from core.permissions import IsProfissional, IsProfissionalOwner
 from core.serializers.profissional_serializer import ProfissionalSerializer
+from core.services.log_action import log_action
 
 
 class ProfissionalListView(APIView):
@@ -34,6 +35,7 @@ class CompletarProfissionalView(APIView):
         if serializer.is_valid():
             serializer.save(usuario=usuario) 
             message = "Perfil profissional completado com sucesso!"
+            log_action(user=usuario, acao='completar_perfil_profissional', descricao='Perfil profissional completado com sucesso!', request=request)
             return Response(
                 {"message": message},
                 status=status.HTTP_201_CREATED

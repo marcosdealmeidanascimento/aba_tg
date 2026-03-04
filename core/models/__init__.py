@@ -5,3 +5,7 @@ from .paciente import *
 from .diagnostico import *
 from .habilidade import *
 from .sessao import *
+from .atividade import *
+from .execucao_atividade import *
+from .pedido_vinculo import *
+from .auditoria import *

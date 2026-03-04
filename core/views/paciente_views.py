@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from core.models import Paciente, Profissional, Responsavel
 from core.permissions import IsRelatedToPaciente
 from core.serializers.paciente_serializer import PacienteSerializer
+from core.services.log_action import log_action
 
 
 class PacienteViewSet(viewsets.ModelViewSet):
@@ -21,6 +22,7 @@ class PacienteViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, 'profissional'):
+            log_action(user, 'visualizou', 'pacientes', self.request)
             return Paciente.objects.all()
         if hasattr(user, 'responsavel'):
             return user.responsavel.pacientes_cuidados.all()
@@ -55,6 +57,7 @@ class PacienteViewSet(viewsets.ModelViewSet):
         profissional = request.user.profissional
 
         paciente.profissionais.remove(profissional)
+        log_action(user=request.user, acao='desvincular_profissional', descricao='Profissional desvinculado com sucesso!', request=request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'], url_path='vincular-responsavel')

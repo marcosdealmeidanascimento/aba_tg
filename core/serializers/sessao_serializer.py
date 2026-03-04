@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from core.models import Sessao
+from core.models.habilidade import Nivel
 from core.serializers.paciente_serializer import PacienteSerializer
 from core.serializers.profissional_serializer import ProfissionalSerializer
+from core.serializers.nivel_serializer import NivelSerializer
 from core.models.paciente import Paciente
 from django.utils import timezone
 
@@ -9,11 +11,13 @@ from django.utils import timezone
 class SessaoSerializer(serializers.ModelSerializer):
     paciente = PacienteSerializer(read_only=True)
     paciente_id = serializers.PrimaryKeyRelatedField(queryset=Paciente.objects.all(), write_only=True, source='paciente')
+    nivel = NivelSerializer(read_only=True)
+    nivel_id = serializers.PrimaryKeyRelatedField(queryset=Nivel.objects.all(), write_only=True, source='nivel')
     profissional = ProfissionalSerializer(read_only=True)
 
     class Meta:
         model = Sessao
-        fields = ['id', 'data_horario_inicio', 'data_horario_fim', 'paciente_id', 'paciente', 'observacoes', 'profissional', 'responsavel']
+        fields = ['id', 'data_horario_inicio', 'data_horario_fim', 'paciente_id', 'paciente', 'observacoes', 'profissional', 'responsavel', 'nivel_id', 'nivel']
         read_only_fields = ['id', 'profissional', 'data_horario_inicio']
 
     def create(self, validated_data):

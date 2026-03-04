@@ -9,6 +9,8 @@ from core.serializers.sessao_serializer import FecharSessaoSerializer, SessaoSer
 from core.permissions import IsProfissional, IsRelatedToPaciente
 from django.core.exceptions import ObjectDoesNotExist
 
+from core.services.log_action import log_action
+
 class SessaoViewSet(viewsets.ModelViewSet):
     queryset = Sessao.objects.all()
     serializer_class = SessaoSerializer
@@ -39,6 +41,7 @@ class SessaoViewSet(viewsets.ModelViewSet):
             profissional = user.profissional
             if profissional.pacientes_atendidos.filter(id=paciente.id).exists():
                 serializer.save(profissional=profissional)
+                log_action(user=user, acao='criou_sessao', descricao='Sessão criada com sucesso!', request=self.request)
                 return
         except ObjectDoesNotExist:
             pass
@@ -60,6 +63,8 @@ class FecharSessaoAPIView(APIView):
         serializer = FecharSessaoSerializer(sessao, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(data_horario_fim=timezone.now())
+        if hasattr(user, 'profissional'):
+            log_action(user=user, acao='fechar_sessao', descricao='Sessão fechada com sucesso!', request=self.request)
 
         return Response(serializer.data)
 
@@ -67,6 +72,7 @@ class FecharSessaoAPIView(APIView):
 class GetSessoesByPacienteView(generics.ListAPIView):
     serializer_class = SessaoSerializer
     permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         user = self.request.user
         paciente_id = self.kwargs.get('paciente_id')
@@ -85,4 +91,10 @@ class GetSessoesByPacienteView(generics.ListAPIView):
         else:
             raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")
 
-        return Sessao.objects.filter(paciente=paciente)
+        if hasattr(user, 'profissional'):
+            log_action(user, 'visualizou', 'sessoes', self.request)
+            return Sessao.objects.filter(paciente=paciente, profissional=user.profissional)
+        elif hasattr(user, 'responsavel'):
+            return Sessao.objects.filter(paciente=paciente, responsavel=user.responsavel)
+
+        return Sessao.objects.none()

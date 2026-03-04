@@ -5,3 +5,6 @@ from .responsavel_views import *
 from .paciente_views import *
 from .diagnostico_views import *
 from .sessao_views import *
+from .atividade_views import *
+from .execucao_atividade_views import *
+from .pedido_vinculo_views import *

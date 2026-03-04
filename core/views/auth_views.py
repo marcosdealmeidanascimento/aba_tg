@@ -8,6 +8,7 @@ from core.models.profissional import Profissional
 from core.models import Usuario
 from core.serializers.profissional_serializer import ProfissionalSerializer
 from core.serializers.responsavel_serializer import ResponsavelSerializer
+from core.services.log_action import log_action
 
 
 class RegistroView(APIView):
@@ -15,6 +16,7 @@ class RegistroView(APIView):
         serializer = RegistroSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            log_action(user=serializer.instance, acao='criar_usuario', descricao='Usuário criado com sucesso!', request=request)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

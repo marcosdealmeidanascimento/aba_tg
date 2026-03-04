@@ -1,7 +1,10 @@
 from django.urls import path, include
 from rest_framework import routers
+from core.views.atividade_views import AtividadeViewSet
 from core.views.auth_views import MyProfileView, RegistroView
+from core.views.execucao_atividade_views import ExecucaoAtividadeViewSet
 from core.views.paciente_views import PacienteViewSet
+from core.views.pedido_vinculo_views import PedidoVinculoViewSet
 from core.views.profissional_views import (
     CompletarProfissionalView,
     ProfissionalPerfilView,
@@ -22,6 +25,9 @@ router = routers.DefaultRouter()
 router.register(r'pacientes', PacienteViewSet, basename='paciente')
 router.register(r'diagnosticos', DiagnosticoViewSet, basename='diagnostico')
 router.register(r'sessoes', SessaoViewSet, basename='sessao')
+router.register(r'execucao-atividades', ExecucaoAtividadeViewSet, basename='execucao')
+router.register(r'pedidos-vinculo', PedidoVinculoViewSet, basename='pedido-vinculo')
+router.register(r'atividades', AtividadeViewSet, basename='atividade')
 
 urlpatterns = [
      # Me

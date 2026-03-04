@@ -3,12 +3,14 @@ from django.utils import timezone
 from .paciente import Paciente
 from .profissional import Profissional
 from .responsavel import Responsavel
+from .habilidade import Nivel
 
 
 class Sessao(models.Model):
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name='sessoes')
     profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE, null=True, blank=True, related_name='sessoes_criadas')
     responsavel = models.ForeignKey(Responsavel, on_delete=models.SET_NULL, null=True, blank=True, related_name='sessoes_criadas')
+    nivel = models.ForeignKey(Nivel, on_delete=models.PROTECT, related_name='sessoes', null=True, blank=True)
     data_horario_inicio = models.DateTimeField(default=timezone.now)
     data_horario_fim = models.DateTimeField(null=True, blank=True)
     observacoes = models.TextField(blank=True)
