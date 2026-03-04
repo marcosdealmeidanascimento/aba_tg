@@ -16,7 +16,7 @@ class RegistroView(APIView):
         serializer = RegistroSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            log_action(user=serializer.instance, acao='criar_usuario', descricao='Usuário criado com sucesso!', request=request)
+            log_action(user=serializer.instance, acao='Criou usuário', descricao='Usuário criado com sucesso!', request=request)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from core.views.atividade_views import AtividadeViewSet
+from core.views.auditoria_views import AuditoriaViewSet
 from core.views.auth_views import MyProfileView, RegistroView
 from core.views.execucao_atividade_views import ExecucaoAtividadeViewSet
 from core.views.modulo_views import ModuloViewSet
@@ -23,6 +24,7 @@ from core.views.sessao_views import GetSessoesByPacienteView, SessaoViewSet, Fec
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
+router.register(r"auditorias", AuditoriaViewSet, basename="auditoria")
 router.register(r'pacientes', PacienteViewSet, basename='paciente')
 router.register(r'diagnosticos', DiagnosticoViewSet, basename='diagnostico')
 router.register(r'sessoes', SessaoViewSet, basename='sessao')

@@ -20,7 +20,7 @@ class DiagnosticoViewSet(viewsets.ModelViewSet):
         # Filtra os diagnósticos com base no tipo de usuário
         if hasattr(user, 'profissional'):
             # Profissional vê todos os diagnósticos dos seus pacientes
-            log_action(user, 'visualizou', 'diagnosticos', self.request)
+            log_action(user, 'Visualização de Diagnósticos', 'diagnosticos', self.request)
             return Diagnostico.objects.filter(
                 paciente__in=user.profissional.pacientes_atendidos.all()
             )
@@ -53,7 +53,7 @@ class DiagnosticoViewSet(viewsets.ModelViewSet):
         serializer.context['profissional_logado'] = user.profissional
         serializer.save()
 
-        log_action(user=user, acao='criou_diagnostico', descricao='Diagnóstico criado com sucesso!', request=self.request)
+        log_action(user=user, acao='Diagnóstico Criado', descricao='Diagnóstico criado com sucesso!', request=self.request)
 
     def perform_update(self, serializer):
         user = self.request.user
@@ -72,7 +72,7 @@ class DiagnosticoViewSet(viewsets.ModelViewSet):
         serializer.instance.profissional = user.profissional
         serializer.save()
 
-        log_action(user=user, acao='editou_diagnostico', descricao='Diagnóstico editado com sucesso!', request=self.request)
+        log_action(user=user, acao='Diagnóstico Editado', descricao='Diagnóstico editado com sucesso!', request=self.request)
 
     def perform_destroy(self, instance):
         user = self.request.user
@@ -90,7 +90,7 @@ class DiagnosticoViewSet(viewsets.ModelViewSet):
 
         instance.delete()
 
-        log_action(user=user, acao='deletou_diagnostico', descricao='Diagnóstico deletado com sucesso!', request=self.request)
+        log_action(user=user, acao='Diagnóstico Deletado', descricao='Diagnóstico deletado com sucesso!', request=self.request)
 
     def get_object(self):
         try:
@@ -124,7 +124,7 @@ class GetDiagnosticoByPacienteView(generics.ListAPIView):
                 raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
 
         if hasattr(user, 'profissional'):
-            log_action(user, 'visualizou', 'diagnosticos', self.request)
+            log_action(user, 'Visualização de Diagnósticos', 'diagnosticos', self.request)
 
         # Retorna o queryset filtrado
         return Diagnostico.objects.filter(paciente=paciente)

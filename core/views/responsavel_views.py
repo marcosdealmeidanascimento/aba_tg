@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from core.permissions import IsResponsavel, IsResponsavelOwner
 from core.models.responsavel import Responsavel
 from core.serializers.responsavel_serializer import ResponsavelSerializer
+from core.services.log_action import log_action
 
 
 class CompletarResponsavelView(APIView):
@@ -24,6 +25,7 @@ class CompletarResponsavelView(APIView):
         serializer = ResponsavelSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(usuario=usuario)
+            log_action(user=usuario, acao='Criou perfil de responsável', descricao='Perfil de responsável completado com sucesso!', request=request)
             return Response(
                 {"message": "Perfil de responsável completado com sucesso!"},
                 status=status.HTTP_201_CREATED

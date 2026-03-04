@@ -41,7 +41,7 @@ class SessaoViewSet(viewsets.ModelViewSet):
             profissional = user.profissional
             if profissional.pacientes_atendidos.filter(id=paciente.id).exists():
                 serializer.save(profissional=profissional)
-                log_action(user=user, acao='criou_sessao', descricao='Sessão criada com sucesso!', request=self.request)
+                log_action(user=user, acao='Criar Sessão', descricao='Sessão criada com sucesso!', request=self.request)
                 return
         except ObjectDoesNotExist:
             pass
@@ -64,7 +64,7 @@ class FecharSessaoAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(data_horario_fim=timezone.now())
         if hasattr(user, 'profissional'):
-            log_action(user=user, acao='fechar_sessao', descricao='Sessão fechada com sucesso!', request=self.request)
+            log_action(user=user, acao='Fechar Sessão', descricao='Sessão fechada com sucesso!', request=self.request)
 
         return Response(serializer.data)
 
@@ -92,7 +92,7 @@ class GetSessoesByPacienteView(generics.ListAPIView):
             raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")
 
         if hasattr(user, 'profissional'):
-            log_action(user, 'visualizou', 'sessoes', self.request)
+            log_action(user, 'Visualização de Sessões', 'sessoes', self.request)
             return Sessao.objects.filter(paciente=paciente)
         elif hasattr(user, 'responsavel'):
             return Sessao.objects.filter(paciente=paciente, responsavel=user.responsavel)

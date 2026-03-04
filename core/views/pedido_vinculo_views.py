@@ -29,9 +29,8 @@ class PedidoVinculoViewSet(viewsets.ModelViewSet):
 
         if novo_status == 'aceito':
             pedido.paciente.profissionais.add(pedido.profissional)
-            log_action(request.user, 'PEDIDO_VINCULO_ACEITO', f'Vínculo aceito. Paciente: {pedido.paciente.id}', request)
+            log_action(request.user, 'Pedido aceito', f'Vínculo aceito. Paciente: {pedido.paciente.id}', request)
         else:
-            log_action(request.user, 'PEDIDO_VINCULO_RECUSADO', f'Vínculo recusado. Paciente: {pedido.paciente.id}', request)
+            log_action(request.user, 'Pedido recusado', f'Vínculo recusado. Paciente: {pedido.paciente.id}', request)
 
         return Response({"success": True})
-

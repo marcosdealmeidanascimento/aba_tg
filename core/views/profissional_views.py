@@ -35,7 +35,7 @@ class CompletarProfissionalView(APIView):
         if serializer.is_valid():
             serializer.save(usuario=usuario) 
             message = "Perfil profissional completado com sucesso!"
-            log_action(user=usuario, acao='completar_perfil_profissional', descricao='Perfil profissional completado com sucesso!', request=request)
+            log_action(user=usuario, acao='Criou perfil profissional', descricao='Perfil profissional completado com sucesso!', request=request)
             return Response(
                 {"message": message},
                 status=status.HTTP_201_CREATED

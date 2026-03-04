@@ -9,3 +9,4 @@ from .atividade_views import *
 from .execucao_atividade_views import *
 from .pedido_vinculo_views import *
 from .modulo_views import *
+from .auditoria_views import *
