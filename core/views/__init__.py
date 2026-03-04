@@ -8,3 +8,4 @@ from .sessao_views import *
 from .atividade_views import *
 from .execucao_atividade_views import *
 from .pedido_vinculo_views import *
+from .modulo_views import *

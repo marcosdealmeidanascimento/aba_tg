@@ -9,3 +9,4 @@ from .atividade_serializer import *
 from .auditoria_serializer import *
 from .nivel_serializer import *
 from .pedido_vinculo_serializer import *
+from .modulo_serializer import *

@@ -12,6 +12,14 @@ class PedidoVinculoViewSet(viewsets.ModelViewSet):
     serializer_class = PedidoVinculoSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'profissional'):
+            return PedidoVinculo.objects.filter(profissional=user.profissional)
+        elif hasattr(user, 'responsavel'):
+            return PedidoVinculo.objects.filter(paciente__in=user.responsavel.pacientes_cuidados.all())
+        return PedidoVinculo.objects.none()
+
     @action(detail=True, methods=['post'])
     def responder(self, request, pk=None):
         pedido = self.get_object()
@@ -26,3 +34,4 @@ class PedidoVinculoViewSet(viewsets.ModelViewSet):
             log_action(request.user, 'PEDIDO_VINCULO_RECUSADO', f'Vínculo recusado. Paciente: {pedido.paciente.id}', request)
 
         return Response({"success": True})
+

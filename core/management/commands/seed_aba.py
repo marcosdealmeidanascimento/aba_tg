@@ -7,7 +7,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Iniciando geração massiva de atividades...")
 
-        # Estrutura de currículo detalhada
+        # Estrutura de currículo corrigida (todos os itens com exatos 2 valores: Nome e Descrição)
         curriculo = {
             'M1': { # COMUNICAÇÃO
                 'N1': [
@@ -19,7 +19,7 @@ class Command(BaseCommand):
                 ],
                 'N2': [
                     ("Tato (Nomeação)", "Nomear 50 itens comuns em imagens."),
-                    ("Mando com Frases", "Pedir itens usando 'Eu quero [item]'.", "MANDO"),
+                    ("Mando com Frases", "Pedir itens usando 'Eu quero [item]'."), # CORRIGIDO AQUI
                     ("Seguimento de Instruções", "Seguir comandos de dois passos (ex: Pegue a bola e coloque na caixa)."),
                     ("Intraverbal Inicial", "Completar músicas ou frases familiares (ex: 'Brilha brilha estrelinha, quero ver você...').")
                 ],
@@ -79,21 +79,25 @@ class Command(BaseCommand):
         # Execução
         for cod_mod, niveis in curriculo.items():
             try:
-                modulo = Modulo.objects.get(codigo=cod_mod)
+                # Nota: Usando codigo=cod_mod pois foi assim que criamos no seeder anterior
+                modulo = Modulo.objects.get(nome=cod_mod)
                 for cod_niv, atividades in niveis.items():
-                    nivel = Nivel.objects.get(modulo=modulo, codigo=cod_niv)
+                    # Nota: Usando codigo=cod_niv pois o nome no model Nivel costuma ser o codigo (N1, N2...)
+                    nivel = Nivel.objects.get(modulo=modulo, nome=cod_niv)
                     
                     for nome, desc in atividades:
                         Atividade.objects.get_or_create(
                             nome=nome,
+                            nivel=nivel,
                             defaults={
                                 'descricao': desc,
-                                'categoria': modulo.nome,
-                                'nivel': nivel
+                                'categoria': modulo.nome
                             }
                         )
-                    self.stdout.write(f"✓ {len(atividades)} atividades inseridas no {modulo.codigo} - {cod_niv}")
+                    self.stdout.write(self.style.SUCCESS(f"✓ {len(atividades)} atividades inseridas no {modulo.nome} - {cod_niv}"))
             except Modulo.DoesNotExist:
-                self.stdout.write(self.style.ERROR(f"Módulo {cod_mod} não encontrado. Rode o seed_aba primeiro!"))
+                self.stdout.write(self.style.ERROR(f"Módulo {cod_mod} não encontrado. Verifique se rodou o seed anterior."))
+            except Nivel.DoesNotExist:
+                self.stdout.write(self.style.ERROR(f"Nível {cod_niv} não encontrado no módulo {cod_mod}."))
 
         self.stdout.write(self.style.SUCCESS("\nSeeder de atividades concluído com sucesso!"))

@@ -93,7 +93,7 @@ class GetSessoesByPacienteView(generics.ListAPIView):
 
         if hasattr(user, 'profissional'):
             log_action(user, 'visualizou', 'sessoes', self.request)
-            return Sessao.objects.filter(paciente=paciente, profissional=user.profissional)
+            return Sessao.objects.filter(paciente=paciente)
         elif hasattr(user, 'responsavel'):
             return Sessao.objects.filter(paciente=paciente, responsavel=user.responsavel)
 
