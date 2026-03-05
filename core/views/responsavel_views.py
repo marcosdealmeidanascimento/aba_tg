@@ -7,8 +7,6 @@ from core.permissions import IsResponsavelOwner
 from rest_framework.permissions import IsAuthenticated
 from core.serializers.responsavel_serializer import ResponsavelSerializer
 from core.services.log_action import log_action
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
 
 
 class CompletarResponsavelView(APIView):

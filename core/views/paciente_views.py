@@ -9,10 +9,15 @@ from core.permissions import IsRelatedToPaciente
 from core.serializers.paciente_serializer import PacienteSerializer
 from core.services.log_action import log_action
 
+from django.core.files.storage import default_storage
+
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 class PacienteViewSet(viewsets.ModelViewSet):
     queryset = Paciente.objects.all()
     serializer_class = PacienteSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_permissions(self):
         if self.action == 'create':
@@ -36,6 +41,10 @@ class PacienteViewSet(viewsets.ModelViewSet):
         serializer.save()
 
     def perform_update(self, serializer):
+        user = self.request.user
+        if not hasattr(user, 'responsavel'):
+            raise PermissionDenied("Apenas responsáveis podem editar dados do paciente.")
+
         serializer.save()
 
     @action(detail=True, methods=['post'], url_path='vincular-profissional')

@@ -1,16 +1,23 @@
 from django.db import models
-from core.models.base import Genero
 from core.models.profissional import Profissional
 from core.models.responsavel import Responsavel
 
 
 class Paciente(models.Model):
-    nome = models.CharField(max_length=2020)
+    foto_paciente = models.ImageField(
+        upload_to='pacientes/fotos/',
+        null=True,
+        blank=True,
+        verbose_name="Foto do Paciente"
+    )
+    nome = models.CharField(max_length=255, blank=True)
     data_nascimento = models.DateField()
     genero = models.CharField(
-        max_length=10,
-        choices=Genero.choices,
-        default=Genero.OUTRO
+        max_length=25,
+        verbose_name="Genero",
+        help_text="Genero",
+        blank=True,
+        null=True,
     )
     descricao = models.TextField(null=True)
 

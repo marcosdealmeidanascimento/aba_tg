@@ -8,10 +8,14 @@ class PacienteSerializer(serializers.ModelSerializer):
     profissionais = ProfissionalSerializer(many=True, read_only=True)
     responsaveis = ResponsavelSerializer(many=True, read_only=True)
 
+    foto_paciente_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Paciente
         fields = [
             'id',
+            'foto_paciente',
+            'foto_paciente_url',
             'nome',
             'data_nascimento',
             'descricao',
@@ -29,3 +33,8 @@ class PacienteSerializer(serializers.ModelSerializer):
         if responsavel_logado:
             paciente.responsaveis.add(responsavel_logado)
         return paciente
+
+    def get_foto_paciente_url(self, obj):
+        if obj.foto_paciente:
+            return obj.foto_paciente.url
+        return None
