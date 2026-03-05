@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from core.models.profissional import Profissional
 from core.permissions import IsProfissional, IsProfissionalOwner
+from rest_framework.parsers import MultiPartParser, FormParser
 from core.serializers.profissional_serializer import ProfissionalSerializer
 from core.services.log_action import log_action
 
@@ -19,28 +20,36 @@ class ProfissionalListView(APIView):
 
 
 class CompletarProfissionalView(APIView):
-    permission_classes = [IsAuthenticated, IsProfissional]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
-    def post(self, request):
-        usuario = request.user
-        if hasattr(usuario, 'profissional'):
-            return Response(
-                {"error": "O perfil profissional já existe. "
-                 "Utilize a rota de atualização."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def get_object(self):
+        try:
+            return Profissional.objects.get(usuario=self.request.user)
+        except Profissional.DoesNotExist:
+            return None
 
-        serializer = ProfissionalSerializer(data=request.data)
+    def patch(self, request, *args, **kwargs):
+        profissional = self.get_object()
+
+        if not profissional:
+            return Response({"detail": "Perfil não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProfissionalSerializer(profissional, data=request.data, partial=True)
 
         if serializer.is_valid():
-            serializer.save(usuario=usuario) 
-            message = "Perfil profissional completado com sucesso!"
-            log_action(user=usuario, acao='Criou perfil profissional', descricao='Perfil profissional completado com sucesso!', request=request)
-            return Response(
-                {"message": message},
-                status=status.HTTP_201_CREATED
-            )
+            serializer.save()
+            log_action(user=request.user, acao='Atualizou perfil de profissional', descricao='Perfil de profissional atualizado com sucesso!', request=request)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ProfissionalSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(usuario=request.user)
+            log_action(user=request.user, acao='Criou perfil de profissional', descricao='Perfil de profissional criado com sucesso!', request=request)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -52,3 +61,4 @@ class ProfissionalPerfilView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profissional.objects.all()
     serializer_class = ProfissionalSerializer
     permission_classes = [IsAuthenticated, IsProfissionalOwner]
+    parser_classes = [MultiPartParser, FormParser]

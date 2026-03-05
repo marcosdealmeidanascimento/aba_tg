@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "core",
     "backend",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,30 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+# Configurações do MinIO (Tratado como se fosse S3)
+AWS_ACCESS_KEY_ID = 'admin_aba'
+AWS_SECRET_ACCESS_KEY = 'senha_segura_123'
+AWS_STORAGE_BUCKET_NAME = 'aba-media'  # Nome do bucket que você vai criar
+AWS_S3_REGION_NAME = 'us-east-1' # Valor padrão, pode manter esse
+
+# Se o Django estiver rodando LOCAL (fora do docker), use 127.0.0.1
+# Se o Django também estiver no docker, use o nome do container: 'http://minio:9000'
+AWS_S3_ADDRESSING_STYLE = "path"
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_ENDPOINT_URL = 'http://minio:9000'
+
+AWS_S3_USE_SSL = False  # Como é local, não tem HTTPS
+AWS_S3_FILE_OVERWRITE = False  # Evita sobrescrever arquivos com o mesmo nome
+
+# Define que os arquivos de mídia (uploads) irão para o MinIO
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

@@ -1,6 +1,5 @@
 from django.db import models
 from .usuario import Usuario
-from core.models.base import Genero
 
 
 class Responsavel(models.Model):
@@ -14,17 +13,38 @@ class Responsavel(models.Model):
     usuario = models.OneToOneField(
         Usuario, 
         on_delete=models.CASCADE,
-        primary_key=True
+        primary_key=True,
+        related_name='responsavel'
     )
+
+    # --- NOVO: Foto e Dados de Identificação ---
+    foto_perfil = models.ImageField(
+        upload_to='responsaveis/fotos/',
+        null=True,
+        blank=True,
+        verbose_name="Foto de Perfil"
+    )
+    nome = models.CharField(max_length=100, verbose_name="Nome", blank=True,)
+    sobrenome = models.CharField(max_length=100, verbose_name="Sobrenome", blank=True,)
+
     genero = models.CharField(
-        choices=Genero.choices,
-        null=True
+        max_length=25,
+        verbose_name="Genero",
+        help_text="Genero",
+        blank=True,
+        null=True,
     )
     parentesco = models.PositiveSmallIntegerField(
         "Parentesco",
         choices=Parentesco.choices,
-        default=Parentesco.OUTRO
+        default=Parentesco.OUTRO,
+        blank=True,
     )
 
+    # --- NOVO: Campos da Imagem ---
+    telefone = models.CharField(max_length=20, null=True, blank=True)
+    cpf = models.CharField(max_length=14, null=True, blank=True, verbose_name="CPF")
+    endereco = models.TextField(verbose_name="Endereço Completo", null=True, blank=True)
+
     def __str__(self):
-        return f"Responsável: {self.usuario.username}"
+        return f"Responsável: {self.nome} {self.sobrenome} ({self.usuario.username})"

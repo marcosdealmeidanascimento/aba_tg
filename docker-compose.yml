@@ -31,6 +31,20 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    
+
+  minio:
+    image: minio/minio
+    container_name: minio_storage
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: admin_aba
+      MINIO_ROOT_PASSWORD: senha_segura_123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
 volumes:
   postgres_data:
+  minio_data:
