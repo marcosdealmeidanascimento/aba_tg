@@ -28,7 +28,7 @@ class PacienteViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if hasattr(user, 'profissional'):
             log_action(user, 'Visualização de Pacientes', 'pacientes', self.request)
-            return Paciente.objects.all()
+            return user.profissional.pacientes_atendidos.all()
         if hasattr(user, 'responsavel'):
             return user.responsavel.pacientes_cuidados.all()
         return Paciente.objects.none()

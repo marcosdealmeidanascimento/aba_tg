@@ -15,7 +15,7 @@ class PedidoVinculoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, 'profissional'):
-            return PedidoVinculo.objects.filter(profissional=user.profissional)
+            return PedidoVinculo.objects.filter(profissional=user.profissional, status='pendente')
         elif hasattr(user, 'responsavel'):
             return PedidoVinculo.objects.filter(paciente__in=user.responsavel.pacientes_cuidados.all())
         return PedidoVinculo.objects.none()
