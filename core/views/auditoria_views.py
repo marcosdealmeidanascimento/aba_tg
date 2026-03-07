@@ -10,4 +10,4 @@ class AuditoriaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return AuditLog.objects.filter(usuario=self.request.user)
+        return AuditLog.objects.filter(usuario=self.request.user).order_by('-data_hora')

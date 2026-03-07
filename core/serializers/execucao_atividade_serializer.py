@@ -19,4 +19,4 @@ class ExecucaoAtividadeSerializer(serializers.ModelSerializer):
             'notas',
             'created_at'
         ]
-        read_only_fields = ['id', 'sessao', 'atividade_detalhes', 'created_at']
+        read_only_fields = ['id', 'atividade_detalhes', 'created_at']
