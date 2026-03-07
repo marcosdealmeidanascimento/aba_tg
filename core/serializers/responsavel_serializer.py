@@ -5,14 +5,12 @@ from core.serializers.usuario_serializer import UsuarioSerializer
 
 class ResponsavelSerializer(serializers.ModelSerializer):
     usuario_info = UsuarioSerializer(source='usuario', read_only=True)
-    foto_perfil_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Responsavel
         fields = [
             'usuario_info',
             'foto_perfil',
-            'foto_perfil_url',
             'nome',
             'sobrenome',
             'parentesco',

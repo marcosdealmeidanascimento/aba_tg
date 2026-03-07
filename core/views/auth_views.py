@@ -7,6 +7,7 @@ from core.serializers import RegistroSerializer
 from core.models.profissional import Profissional
 from core.models import Usuario
 from core.serializers.profissional_serializer import ProfissionalSerializer
+from core.serializers.usuario_serializer import UsuarioSerializer
 from core.serializers.responsavel_serializer import ResponsavelSerializer
 from core.services.log_action import log_action
 
@@ -42,7 +43,14 @@ class MyProfileView(APIView):
 
         if usuario.tipo_usuario == Usuario.USER_TYPE_CHOICES[0][0]:
             try:
-                perfil = Profissional.objects.get(usuario=usuario)
+                perfil = Profissional.objects.filter(usuario=usuario)
+                if len(perfil) == 0:
+                    usuario = Usuario.objects.get(pk=usuario.pk)
+                    serializer = UsuarioSerializer(usuario)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    perfil = Profissional.objects.get(usuario=usuario)
+
                 serializer = ProfissionalSerializer(perfil)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Profissional.DoesNotExist:
@@ -52,7 +60,13 @@ class MyProfileView(APIView):
                 )
         elif usuario.tipo_usuario == Usuario.USER_TYPE_CHOICES[1][0]:
             try:
-                perfil = Responsavel.objects.get(usuario=usuario)
+                perfil = Responsavel.objects.filter(usuario=usuario)
+                if len(perfil) == 0:
+                    usuario = Usuario.objects.get(pk=usuario.pk)
+                    serializer = UsuarioSerializer(usuario)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    perfil = Responsavel.objects.get(usuario=usuario)
                 serializer = ResponsavelSerializer(perfil)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Responsavel.DoesNotExist:

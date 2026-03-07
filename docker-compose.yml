@@ -45,6 +45,19 @@ services:
     volumes:
       - minio_data:/data
 
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 admin_aba senha_segura_123;
+      mc mb --ignore-existing local/aba-media;
+      mc anonymous set download local/aba-media;
+      exit 0;
+      "
+
 volumes:
   postgres_data:
   minio_data:
