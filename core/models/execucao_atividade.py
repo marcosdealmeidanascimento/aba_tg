@@ -7,10 +7,11 @@ from .paciente import Paciente
 
 class ExecucaoAtividade(models.Model):
     STATUS_CHOICES = [
-        ('correta', 'Correta'), 
-        ('ajuda', 'Ajuda'), 
-        ('incorreta', 'Incorreta'), 
-        ('sem_resposta', 'Sem Resposta')
+        ('sem_auxilio', 'Correta'),
+        ('ajuda', 'Precisou Ajuda'),
+        ('dificuldade', 'Teve Dificuldade'),
+        ('nao_realizou', 'Não Realizou'),
+        ('outro', 'Outro')
     ]
     sessao = models.ForeignKey(Sessao, on_delete=models.CASCADE, related_name='execucoes')
     atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
