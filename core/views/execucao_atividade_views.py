@@ -11,7 +11,7 @@ class ExecucaoAtividadeViewSet(viewsets.ModelViewSet):
     serializer_class = ExecucaoAtividadeSerializer
 
     def get_queryset(self):
-        queryset = ExecucaoAtividade.objects.all()
+        queryset = ExecucaoAtividade.objects.all().order_by('-created_at')
         paciente_id = self.request.query_params.get('pacienteId', None)
         sessao_id = self.request.query_params.get('sessaoId', None)
         if paciente_id is not None:

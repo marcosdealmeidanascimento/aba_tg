@@ -5,6 +5,7 @@ from core.views.auditoria_views import AuditoriaViewSet
 from core.views.auth_views import MyProfileView, RegistroView
 from core.views.execucao_atividade_views import ExecucaoAtividadeViewSet
 from core.views.modulo_views import ModuloViewSet
+from core.views.nivel_views import NivelViewSet
 from core.views.paciente_views import PacienteViewSet
 from core.views.pedido_vinculo_views import PedidoVinculoViewSet
 from core.views.profissional_views import (
@@ -32,6 +33,7 @@ router.register(r'modulos', ModuloViewSet, basename='modulo')
 router.register(r'execucao-atividades', ExecucaoAtividadeViewSet, basename='execucao')
 router.register(r'pedidos-vinculo', PedidoVinculoViewSet, basename='pedido-vinculo')
 router.register(r'atividades', AtividadeViewSet, basename='atividade')
+router.register(r'niveis', NivelViewSet, basename='nivel')
 
 urlpatterns = [
      # Me

@@ -2,11 +2,13 @@ from rest_framework import serializers
 from core.models import Diagnostico
 from core.serializers.profissional_serializer import ProfissionalSerializer
 from core.models import Paciente
+from core.serializers.nivel_serializer import NivelSerializer
 
 
 class DiagnosticoSerializer(serializers.ModelSerializer):
     paciente = serializers.PrimaryKeyRelatedField(queryset=Paciente.objects.all())
     profissional = ProfissionalSerializer(read_only=True)
+    nivel_detalhes = NivelSerializer(source='nivel', read_only=True)
 
     class Meta:
         model = Diagnostico
@@ -14,11 +16,12 @@ class DiagnosticoSerializer(serializers.ModelSerializer):
             'id',
             'paciente',
             'nivel',
+            'nivel_detalhes',
             'observacoes',
             'profissional',
             'data_diagnostico'
         ]
-        read_only_fields = ['profissional', 'data_diagnostico', 'paciente']
+        read_only_fields = ['profissional', 'data_diagnostico', 'paciente', 'nivel_detalhes']
 
     def create(self, validated_data):
         diagnostico = Diagnostico.objects.create(**validated_data)

@@ -1,8 +1,22 @@
 from rest_framework import serializers
 from core.models.execucao_atividade import ExecucaoAtividade
+from core.serializers.atividade_serializer import AtividadeSerializer
 
 
 class ExecucaoAtividadeSerializer(serializers.ModelSerializer):
+    atividade_detalhes = AtividadeSerializer(source='atividade', read_only=True)
+
     class Meta:
         model = ExecucaoAtividade
-        fields = '__all__'
+        fields = [
+            'id',
+            'sessao',
+            'atividade',
+            'atividade_detalhes',
+            'profissional',
+            'paciente',
+            'status',
+            'notas',
+            'created_at'
+        ]
+        read_only_fields = ['id', 'sessao', 'atividade_detalhes', 'created_at']
