@@ -8,4 +8,5 @@ from .sessao import *
 from .atividade import *
 from .execucao_atividade import *
 from .pedido_vinculo import *
+from .pedido_agendamento import *
 from .auditoria import *

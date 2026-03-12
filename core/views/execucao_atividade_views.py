@@ -26,27 +26,23 @@ class ExecucaoAtividadeViewSet(viewsets.ModelViewSet):
         sessao_id = request.query_params.get('sessaoId')
 
         queryset = self.get_queryset()
-
-        if not paciente_id and not sessao_id:
-            return Response({"error": "Informe pacienteId ou sessaoId"}, status=400)
+        if paciente_id:
+            queryset = queryset.filter(paciente_id=paciente_id)
+        if sessao_id:
+            queryset = queryset.filter(sessao_id=sessao_id)
 
         total_execucoes = queryset.count()
 
         if total_execucoes == 0:
-            return Response({
-                "total": 0,
-                "stats": [],
-                "message": "Nenhuma atividade executada neste contexto."
-            })
+            return Response({"total": 0, "stats": [], "message": "Nenhum dado."})
 
-        contagem = queryset.values('status').annotate(total=Count('status'))
+        contagem = queryset.values('status').annotate(total=Count('status')).order_by()
 
         stats = []
         for item in contagem:
             status_key = item['status']
             quantidade = item['total']
             percentual = round((quantidade / total_execucoes) * 100, 2)
-
             label = dict(ExecucaoAtividade.STATUS_CHOICES).get(status_key, status_key)
 
             stats.append({

@@ -22,6 +22,7 @@ from core.views.diagnostico_views import (
      GetDiagnosticoByPacienteView
 )
 from core.views.sessao_views import GetSessoesByPacienteView, SessaoViewSet, FecharSessaoAPIView
+from core.views.pedido_agendamento_views import PedidoAgendamentoViewSet
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
@@ -34,6 +35,7 @@ router.register(r'execucao-atividades', ExecucaoAtividadeViewSet, basename='exec
 router.register(r'pedidos-vinculo', PedidoVinculoViewSet, basename='pedido-vinculo')
 router.register(r'atividades', AtividadeViewSet, basename='atividade')
 router.register(r'niveis', NivelViewSet, basename='nivel')
+router.register(r'pedidos-agendamento', PedidoAgendamentoViewSet, basename='pedido-agendamento')
 
 urlpatterns = [
      # Me

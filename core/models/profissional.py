@@ -37,12 +37,6 @@ class Profissional(models.Model):
         blank=True
     )
 
-    telefone_contato = models.CharField(
-        max_length=20,
-        verbose_name="Telefone de Contato",
-        blank=True
-    )
-
     anos_experiencia_aba = models.PositiveIntegerField(
         verbose_name="Anos de Experiência em ABA",
         null=True,
@@ -81,6 +75,68 @@ class Profissional(models.Model):
         verbose_name="Genero",
         help_text="Genero",
         blank=True
+    )
+    # --- ATENDIMENTO (Conforme a terceira seção) ---
+    atendimento_logradouro = models.CharField(
+        max_length=100,
+        verbose_name="Logradouro",
+        blank=True
+    )
+    atendimento_numero = models.CharField(
+        max_length=10,
+        verbose_name="N°",
+        blank=True
+    )
+    atendimento_complemento = models.CharField(
+        max_length=100,
+        verbose_name="Complemento",
+        blank=True
+    )
+    atendimento_bairro = models.CharField(
+        max_length=100,
+        verbose_name="Bairro",
+        blank=True
+    )
+    atendimento_cidade = models.CharField(
+        max_length=100,
+        verbose_name="Cidade",
+        blank=True
+    )
+    atendimento_cep = models.CharField(
+        max_length=8,
+        verbose_name="CEP",
+        blank=True
+    )
+    atendimento_uf = models.CharField(
+        max_length=2,
+        verbose_name="UF",
+        blank=True
+    )
+
+    # --- CONTATO (Conforme a quarta seção) ---
+    telefone_contato = models.CharField(
+        max_length=20,
+        verbose_name="Telefone de Contato",
+        blank=True
+    )
+
+    email_contato = models.EmailField(
+        verbose_name="E-mail de Contato",
+        blank=True
+    )
+
+    # --- Documentos ---
+    diploma = models.FileField(
+        upload_to='profissionais/documentos/',
+        null=True,
+        blank=True,
+        verbose_name="Diploma"
+    )
+    curriculo = models.FileField(
+        upload_to='profissionais/documentos/',
+        null=True,
+        blank=True,
+        verbose_name="Curriculum Vitae"
     )
 
     # --- METADADOS ---

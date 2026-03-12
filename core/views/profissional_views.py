@@ -1,3 +1,4 @@
+from django.db import models
 from rest_framework import status, viewsets
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -10,13 +11,64 @@ from core.serializers.profissional_serializer import ProfissionalSerializer
 from core.services.log_action import log_action
 
 
-class ProfissionalListView(APIView):
+class ProfissionalListView(generics.ListAPIView):
+    serializer_class = ProfissionalSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        profissionais = Profissional.objects.all()
-        serializer = ProfissionalSerializer(profissionais, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        qs = Profissional.objects.all()
+        p = self.request.query_params
+
+        # Busca textual geral: nome, sobrenome, especialidade, bio, certificações
+        search = p.get('search')
+        if search:
+            qs = qs.filter(
+                models.Q(nome__icontains=search)
+                | models.Q(sobrenome__icontains=search)
+                | models.Q(especialidade_principal__icontains=search)
+                | models.Q(bio_descricao__icontains=search)
+                | models.Q(certificacoes__icontains=search)
+                | models.Q(formacao_academica__icontains=search)
+            )
+
+        # Filtros individuais
+        if especialidade := p.get('especialidade'):
+            qs = qs.filter(especialidade_principal__icontains=especialidade)
+
+        if certificacao := p.get('certificacao'):
+            qs = qs.filter(certificacoes__icontains=certificacao)
+
+        if genero := p.get('genero'):
+            qs = qs.filter(genero__iexact=genero)
+
+        if cidade := p.get('cidade'):
+            qs = qs.filter(atendimento_cidade__icontains=cidade)
+
+        if uf := p.get('uf'):
+            qs = qs.filter(atendimento_uf__iexact=uf)
+
+        if bairro := p.get('bairro'):
+            qs = qs.filter(atendimento_bairro__icontains=bairro)
+
+        # Experiência mínima e máxima
+        if exp_min := p.get('exp_min'):
+            qs = qs.filter(anos_experiencia_aba__gte=exp_min)
+
+        if exp_max := p.get('exp_max'):
+            qs = qs.filter(anos_experiencia_aba__lte=exp_max)
+
+        # Ordenação
+        ordering = p.get('ordering', 'nome')
+        allowed_orderings = {
+            'nome': 'nome',
+            '-nome': '-nome',
+            'exp': 'anos_experiencia_aba',
+            '-exp': '-anos_experiencia_aba',
+            'recente': '-data_cadastro',
+        }
+        qs = qs.order_by(allowed_orderings.get(ordering, 'nome'))
+
+        return qs
 
 
 class CompletarProfissionalView(APIView):
