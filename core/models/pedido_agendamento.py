@@ -16,7 +16,15 @@ class PedidoAgendamento(models.Model):
     responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, related_name='pedidos_agendamento_criados')
     profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name='pedidos_agendamento_recebidos')
     nivel = models.ForeignKey(Nivel, on_delete=models.SET_NULL, null=True, blank=True, related_name='pedidos_agendamento')
+    disponibilidade = models.ForeignKey(
+        'DisponibilidadeProfissional',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='pedidos',
+    )
     data_horario_proposta = models.DateTimeField()
+    data_horario_fim_proposta = models.DateTimeField(null=True, blank=True)
     observacoes = models.TextField(blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pendente')
     motivo_recusa = models.TextField(blank=True)

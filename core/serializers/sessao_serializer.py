@@ -17,7 +17,7 @@ class SessaoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sessao
-        fields = ['id', 'data_horario_inicio', 'data_horario_fim', 'paciente_id', 'paciente', 'observacoes', 'profissional', 'responsavel', 'nivel_id', 'nivel']
+        fields = ['id', 'data_horario_inicio', 'data_horario_fim', 'data_horario_fim_prevista', 'paciente_id', 'paciente', 'observacoes', 'profissional', 'responsavel', 'nivel_id', 'nivel']
         read_only_fields = ['id', 'profissional', 'data_horario_inicio']
 
     def create(self, validated_data):

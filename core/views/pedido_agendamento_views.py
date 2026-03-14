@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.models import PedidoAgendamento, Sessao
+from core.models.disponibilidade_profissional import DisponibilidadeProfissional
 from core.serializers.pedido_agendamento_serializer import (
     PedidoAgendamentoSerializer,
     RecusarAgendamentoSerializer,
@@ -42,7 +43,23 @@ class PedidoAgendamentoViewSet(viewsets.ModelViewSet):
         if not profissional.pacientes_atendidos.filter(id=paciente.id).exists():
             raise ValidationError("O profissional selecionado não atende este paciente.")
 
-        pedido = serializer.save(responsavel=responsavel)
+        disponibilidade = serializer.validated_data.get('disponibilidade')
+        extra = {}
+
+        if disponibilidade:
+            if disponibilidade.profissional != profissional:
+                raise ValidationError("O slot de disponibilidade não pertence ao profissional selecionado.")
+            if disponibilidade.is_ocupado():
+                raise ValidationError("Slot já reservado.")
+            extra['data_horario_proposta'] = disponibilidade.data_horario_inicio
+            extra['data_horario_fim_proposta'] = disponibilidade.data_horario_fim
+        else:
+            inicio = serializer.validated_data.get('data_horario_proposta')
+            fim = serializer.validated_data.get('data_horario_fim_proposta')
+            if inicio and fim and fim <= inicio:
+                raise ValidationError("data_horario_fim_proposta deve ser posterior a data_horario_proposta.")
+
+        pedido = serializer.save(responsavel=responsavel, **extra)
         log_action(
             user=user,
             acao='Pedido de Agendamento',
@@ -66,6 +83,7 @@ class PedidoAgendamentoViewSet(viewsets.ModelViewSet):
             profissional=pedido.profissional,
             nivel=pedido.nivel,
             data_horario_inicio=pedido.data_horario_proposta,
+            data_horario_fim_prevista=pedido.data_horario_fim_proposta,
             observacoes=pedido.observacoes,
         )
 

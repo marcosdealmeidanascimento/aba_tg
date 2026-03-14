@@ -13,6 +13,7 @@ class Sessao(models.Model):
     nivel = models.ForeignKey(Nivel, on_delete=models.PROTECT, related_name='sessoes', null=True, blank=True)
     data_horario_inicio = models.DateTimeField(default=timezone.now)
     data_horario_fim = models.DateTimeField(null=True, blank=True)
+    data_horario_fim_prevista = models.DateTimeField(null=True, blank=True)
     observacoes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
