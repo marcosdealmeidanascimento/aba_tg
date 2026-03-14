@@ -13,13 +13,12 @@ from core.services.log_action import log_action
 
 class ProfissionalListView(generics.ListAPIView):
     serializer_class = ProfissionalSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def get_queryset(self):
         qs = Profissional.objects.all()
         p = self.request.query_params
 
-        # Busca textual geral: nome, sobrenome, especialidade, bio, certificações
         search = p.get('search')
         if search:
             qs = qs.filter(
@@ -50,14 +49,12 @@ class ProfissionalListView(generics.ListAPIView):
         if bairro := p.get('bairro'):
             qs = qs.filter(atendimento_bairro__icontains=bairro)
 
-        # Experiência mínima e máxima
         if exp_min := p.get('exp_min'):
             qs = qs.filter(anos_experiencia_aba__gte=exp_min)
 
         if exp_max := p.get('exp_max'):
             qs = qs.filter(anos_experiencia_aba__lte=exp_max)
 
-        # Ordenação
         ordering = p.get('ordering', 'nome')
         allowed_orderings = {
             'nome': 'nome',
@@ -67,6 +64,15 @@ class ProfissionalListView(generics.ListAPIView):
             'recente': '-data_cadastro',
         }
         qs = qs.order_by(allowed_orderings.get(ordering, 'nome'))
+
+        try:
+            offset = int(p.get('offset', 0))
+            limit = int(p.get('limit', 10))
+            if offset < 0: offset = 0
+            if limit <= 0: limit = 10
+            qs = qs[offset : offset + limit]
+        except (ValueError, TypeError):
+            qs = qs[:10]
 
         return qs
 
