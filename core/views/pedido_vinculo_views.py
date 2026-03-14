@@ -17,7 +17,7 @@ class PedidoVinculoViewSet(viewsets.ModelViewSet):
         if hasattr(user, 'profissional'):
             return PedidoVinculo.objects.filter(profissional=user.profissional, status='pendente')
         elif hasattr(user, 'responsavel'):
-            return PedidoVinculo.objects.filter(paciente__in=user.responsavel.pacientes_cuidados.all())
+            return PedidoVinculo.objects.filter(paciente__in=user.responsavel.pacientes_cuidados.all()).order_by('-id')
         return PedidoVinculo.objects.none()
 
     @action(detail=True, methods=['post'])
