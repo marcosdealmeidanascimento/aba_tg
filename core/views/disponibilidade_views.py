@@ -61,8 +61,7 @@ class DisponibilidadeProfissionalViewSet(viewsets.ModelViewSet):
 
         if hasattr(user, 'profissional'):
             return DisponibilidadeProfissional.objects.filter(
-                profissional=user.profissional,
-                ativo=True,
+                profissional=user.profissional
             )
 
         return DisponibilidadeProfissional.objects.none()
