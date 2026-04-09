@@ -138,9 +138,31 @@ class Profissional(models.Model):
         blank=True,
         verbose_name="Curriculum Vitae"
     )
+    historico_criminal = models.FileField(
+        upload_to='profissionais/documentos/',
+        null=True,
+        blank=True,
+        verbose_name="Histórico Criminal"
+    )
 
     # --- METADADOS ---
     data_cadastro = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    # --- VALIDAÇÃO ADMIN ---
+    STATUS_VALIDACAO_CHOICES = (
+        ("pendente", "Pendente"),
+        ("aprovado", "Aprovado"),
+        ("rejeitado", "Rejeitado"),
+    )
+    status_validacao = models.CharField(
+        max_length=20,
+        choices=STATUS_VALIDACAO_CHOICES,
+        default="pendente",
+        verbose_name="Status de Validação"
+    )
+    crp_validado = models.BooleanField(default=False, verbose_name="CRP/Registro Validado")
+    historico_criminal_aprovado = models.BooleanField(default=False, verbose_name="Histórico Criminal Aprovado")
+    notas_admin = models.TextField(blank=True, verbose_name="Notas do Administrador")
 
     class Meta:
         verbose_name = "Profissional"

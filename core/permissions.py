@@ -20,29 +20,33 @@ class IsResponsavel(BasePermission):
 class IsProfissionalOwner(BasePermission):
     """
     Permite acesso apenas se o usuário for o dono do perfil profissional.
+    Admin tem acesso a qualquer perfil.
     """
     def has_object_permission(self, request, view, obj):
-        # obj é a instância do objeto (neste caso, o perfil de Profissional)
+        if request.user.tipo_usuario == 'admin':
+            return True
         return obj.usuario == request.user
 
 
 class IsResponsavelOwner(BasePermission):
     """
     Permite acesso apenas se o usuário for o dono do perfil de responsável.
+    Admin tem acesso a qualquer perfil.
     """
     def has_object_permission(self, request, view, obj):
-        # obj é a instância do objeto (neste caso, o perfil de Responsável)
+        if request.user.tipo_usuario == 'admin':
+            return True
         return obj.usuario == request.user
 
 
 class IsProfissionalOrResponsavel(BasePermission):
     """
     Permite acesso apenas a pacientes que são atendidos por um profissional ou
-    cadastrados por um responsável.
+    cadastrados por um responsável. Admin tem acesso irrestrito.
     """
     def has_permission(self, request, view):
-        # Permite a visualização da lista se o
-        # usuário for profissional ou responsável
+        if request.user.is_authenticated and request.user.tipo_usuario == 'admin':
+            return True
         if not hasattr(request.user, 'profissional') and \
            not hasattr(request.user, 'responsavel'):
             return False
@@ -51,10 +55,13 @@ class IsProfissionalOrResponsavel(BasePermission):
 
 class IsRelatedToPaciente(BasePermission):
     """
-    Permite acesso apenas se o usuário logado for um dos profissionais ou 
-    responsáveis relacionados ao paciente da sessão.
+    Permite acesso apenas se o usuário logado for um dos profissionais ou
+    responsáveis relacionados ao paciente da sessão. Admin tem acesso irrestrito.
     """
     def has_object_permission(self, request, view, obj):
+        if request.user.tipo_usuario == 'admin':
+            return True
+
         paciente_instance = obj.paciente
 
         if hasattr(request.user, 'profissional'):
@@ -64,3 +71,11 @@ class IsRelatedToPaciente(BasePermission):
             return paciente_instance in request.user.responsavel.pacientes_cuidados.all()
 
         return False
+
+
+class IsAdmin(BasePermission):
+    """
+    Permite acesso apenas a usuários com tipo_usuario 'admin'.
+    """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.tipo_usuario == 'admin'

@@ -19,6 +19,8 @@ class SessaoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
+        if user.tipo_usuario == 'admin':
+            return Sessao.objects.all()
         if hasattr(user, 'profissional'):
             return Sessao.objects.filter(profissional=user.profissional)
         if hasattr(user, 'responsavel'):
@@ -82,19 +84,17 @@ class GetSessoesByPacienteView(generics.ListAPIView):
         except Paciente.DoesNotExist:
             raise NotFound("Paciente não encontrado.")
 
+        if user.tipo_usuario == 'admin':
+            return Sessao.objects.filter(paciente=paciente)
+
         if hasattr(user, 'profissional'):
             if paciente not in user.profissional.pacientes_atendidos.all():
                 raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")
-        elif hasattr(user, 'responsavel'):
-            if paciente not in user.responsavel.pacientes_cuidados.all():
-                raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")
-        else:
-            raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")
-
-        if hasattr(user, 'profissional'):
             log_action(user, 'Visualização de Sessões', 'sessoes', self.request)
             return Sessao.objects.filter(paciente=paciente)
         elif hasattr(user, 'responsavel'):
+            if paciente not in user.responsavel.pacientes_cuidados.all():
+                raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")
             return Sessao.objects.filter(paciente=paciente, responsavel=user.responsavel)
 
-        return Sessao.objects.none()
+        raise PermissionDenied("Você não tem permissão para acessar as sessões deste paciente.")

@@ -26,6 +26,8 @@ class PacienteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.tipo_usuario == 'admin':
+            return Paciente.objects.all()
         if hasattr(user, 'profissional'):
             log_action(user, 'Visualização de Pacientes', 'pacientes', self.request)
             return user.profissional.pacientes_atendidos.all()

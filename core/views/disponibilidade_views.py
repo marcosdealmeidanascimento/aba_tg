@@ -64,6 +64,9 @@ class DisponibilidadeProfissionalViewSet(viewsets.ModelViewSet):
                 profissional=user.profissional
             )
 
+        if user.tipo_usuario == 'admin':
+            return DisponibilidadeProfissional.objects.all()
+
         return DisponibilidadeProfissional.objects.none()
 
     def list(self, request, *args, **kwargs):

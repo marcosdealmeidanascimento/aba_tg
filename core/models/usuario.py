@@ -6,6 +6,7 @@ class Usuario(AbstractUser):
     USER_TYPE_CHOICES = (
         ("profissional", "Profissional"),
         ("responsavel", "Responsável"),
+        ("admin", "Administrador"),
     )
     tipo_usuario = models.CharField(
         max_length=20,

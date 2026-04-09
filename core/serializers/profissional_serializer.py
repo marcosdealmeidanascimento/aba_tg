@@ -32,5 +32,8 @@ class ProfissionalSerializer(serializers.ModelSerializer):
             'atendimento_cep',
             'telefone_contato',
             'email_contato',
+            'diploma',
+            'curriculo',
+            'historico_criminal',
             'data_cadastro',
         ]

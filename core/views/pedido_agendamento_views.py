@@ -21,6 +21,8 @@ class PedidoAgendamentoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.tipo_usuario == 'admin':
+            return PedidoAgendamento.objects.all().order_by('-data_pedido')
         if hasattr(user, 'profissional'):
             return PedidoAgendamento.objects.filter(profissional=user.profissional).order_by('-data_pedido')
         if hasattr(user, 'responsavel'):

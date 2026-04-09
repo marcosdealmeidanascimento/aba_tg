@@ -75,6 +75,10 @@ class MyProfileView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
+        elif usuario.tipo_usuario == 'admin':
+            serializer = UsuarioSerializer(usuario)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(
             {"error": "Tipo de usuário inválido."},
             status=status.HTTP_400_BAD_REQUEST

@@ -17,6 +17,9 @@ class DiagnosticoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
+        if user.tipo_usuario == 'admin':
+            return Diagnostico.objects.all()
+
         # Filtra os diagnósticos com base no tipo de usuário
         if hasattr(user, 'profissional'):
             # Profissional vê todos os diagnósticos dos seus pacientes
@@ -115,12 +118,14 @@ class GetDiagnosticoByPacienteView(generics.ListAPIView):
 
         user = self.request.user
 
-        if hasattr(user, 'profissional'):
-            if paciente not in user.profissional.pacientes_atendidos.all():
-                raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
-
-        if hasattr(user, 'responsavel'):
-            if paciente not in user.responsavel.pacientes_cuidados.all():
+        if user.tipo_usuario != 'admin':
+            if hasattr(user, 'profissional'):
+                if paciente not in user.profissional.pacientes_atendidos.all():
+                    raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
+            elif hasattr(user, 'responsavel'):
+                if paciente not in user.responsavel.pacientes_cuidados.all():
+                    raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
+            else:
                 raise PermissionDenied("Você não tem permissão para acessar os diagnósticos deste paciente.")
 
         if hasattr(user, 'profissional'):

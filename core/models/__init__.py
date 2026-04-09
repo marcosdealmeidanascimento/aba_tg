@@ -11,3 +11,4 @@ from .pedido_vinculo import *
 from .pedido_agendamento import *
 from .disponibilidade_profissional import *
 from .auditoria import *
+from .ticket import *

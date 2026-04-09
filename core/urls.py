@@ -24,6 +24,16 @@ from core.views.diagnostico_views import (
 from core.views.sessao_views import GetSessoesByPacienteView, SessaoViewSet, FecharSessaoAPIView
 from core.views.pedido_agendamento_views import PedidoAgendamentoViewSet
 from core.views.disponibilidade_views import DisponibilidadeProfissionalViewSet
+from core.views.admin_profissional_views import (
+    AdminProfissionalListView,
+    AdminProfissionalDetailView,
+    AdminValidacaoProfissionalView,
+)
+from core.views.ticket_views import (
+    TicketListCreateView,
+    TicketDetailView,
+    ResponderTicketView,
+)
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
@@ -69,6 +79,16 @@ urlpatterns = [
      # Rotas para Sessao
      path('sessoes/fechar/<int:pk>/', FecharSessaoAPIView.as_view(), name='fechar_sessao'),
      path('sessoes/paciente/<int:paciente_id>/', GetSessoesByPacienteView.as_view(), name='sessoes_paciente'),
+
+     # Rotas de Suporte
+     path('suporte/tickets/', TicketListCreateView.as_view(), name='ticket_list_create'),
+     path('suporte/tickets/<int:pk>/', TicketDetailView.as_view(), name='ticket_detail'),
+     path('suporte/tickets/<int:pk>/responder/', ResponderTicketView.as_view(), name='ticket_responder'),
+
+     # Rotas Admin — Profissionais
+     path('admin/profissionais/', AdminProfissionalListView.as_view(), name='admin_profissional_list'),
+     path('admin/profissionais/<int:pk>/', AdminProfissionalDetailView.as_view(), name='admin_profissional_detail'),
+     path('admin/profissionais/<int:pk>/validacao/', AdminValidacaoProfissionalView.as_view(), name='admin_validacao_profissional'),
 
      # Rotas para outros endpoints
      path('', include(router.urls)),

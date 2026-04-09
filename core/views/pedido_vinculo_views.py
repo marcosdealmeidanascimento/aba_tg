@@ -14,6 +14,8 @@ class PedidoVinculoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.tipo_usuario == 'admin':
+            return PedidoVinculo.objects.all().order_by('-id')
         if hasattr(user, 'profissional'):
             return PedidoVinculo.objects.filter(profissional=user.profissional, status='pendente')
         elif hasattr(user, 'responsavel'):
