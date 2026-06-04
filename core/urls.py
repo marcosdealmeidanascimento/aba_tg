@@ -29,11 +29,13 @@ from core.views.admin_profissional_views import (
     AdminProfissionalDetailView,
     AdminValidacaoProfissionalView,
 )
+from core.views.admin_responsavel_views import AdminResponsavelListView
 from core.views.ticket_views import (
     TicketListCreateView,
     TicketDetailView,
     ResponderTicketView,
 )
+from core.views.import_views import ImportXMLView
 
 # Routers de ViewSets
 router = routers.DefaultRouter()
@@ -85,8 +87,12 @@ urlpatterns = [
      path('suporte/tickets/<int:pk>/', TicketDetailView.as_view(), name='ticket_detail'),
      path('suporte/tickets/<int:pk>/responder/', ResponderTicketView.as_view(), name='ticket_responder'),
 
+     # Rotas Admin — Importação XML
+     path('admin/import/xml/', ImportXMLView.as_view(), name='import_xml'),
+
      # Rotas Admin — Profissionais
      path('admin/profissionais/', AdminProfissionalListView.as_view(), name='admin_profissional_list'),
+     path('admin/responsaveis/', AdminResponsavelListView.as_view(), name='admin_responsavel_list'),
      path('admin/profissionais/<int:pk>/', AdminProfissionalDetailView.as_view(), name='admin_profissional_detail'),
      path('admin/profissionais/<int:pk>/validacao/', AdminValidacaoProfissionalView.as_view(), name='admin_validacao_profissional'),
 
